@@ -299,7 +299,8 @@ function HTToptions_callback(options) {
                   'HTTtooltipCharacter' : "T",
                   'align_top' : 1,
                   'align_left' : 1,
-                  'keep_on_screen' : 1}
+                  'keep_on_screen' : 1};
+  }
   if(HTToptions['trigger_hover']) {
     window.addEventListener("mousemove", HTTmousemove, false);
     window.addEventListener("scroll", HTTmousescroll, false);
