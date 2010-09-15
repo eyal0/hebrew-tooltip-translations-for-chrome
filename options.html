@@ -17,7 +17,7 @@ function save_options() {
 
 // Restores select box state to saved value from localStorage.
 function restore_options() {
-  var options = JSON.parse(localStorage['options']);
+  var options = localStorage['options'] && JSON.parse(localStorage['options']);
   if (!options) {
     options = {};
   }

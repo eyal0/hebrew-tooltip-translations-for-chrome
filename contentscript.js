@@ -134,7 +134,7 @@ function getStringOffsetFromPoint(elem, x, y) {
       if(range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
          range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
         range.detach();
-        return({'string' : str, 'offset' : currentPos});
+        return({'string' : str, 'offset' : currentPos, 'text_node' : elem});
       }
       currentPos += 1;
     }
@@ -154,22 +154,34 @@ function getStringOffsetFromPoint(elem, x, y) {
     }
   }
   return(null);
-}    
+}
 
 function HTTgetWord() {
+  var text = "";
   var str_offset = getStringOffsetFromPoint(HTTelem, HTTcurX, HTTcurY);
-  if(!str_offset) return;
-  var str = str_offset.string;
-  var start = str_offset.offset;
-  var end = start + 1;
-  var valid_word = /^((\w)+|([\u0590-\u05ff\"\']+))$/;
-  if(!valid_word.test(str.substring(start, end)))
-    return null;
-  while(start > 0 && valid_word.test(str.substring(start - 1, end)))
-    start--;
-  while(end < str.length && valid_word.test(str.substring(start, end+1)))
-    end++;
-  var text = str.substring(start, end);
+  if(str_offset) {
+    var range = window.getSelection();
+    if(range && //there is a range
+       range.toString != "" && //there is text selected
+       range.anchorNode == range.focusNode && //it's just a single node
+       str_offset.text_node == range.anchorNode && //it's the same node as the one under the cursor
+       ((range.baseOffset < range.focusOffset && range.baseOffset <= str_offset.offset && str_offset.offset <= range.focusOffset) || //offset is inside the selected region
+        (range.focusOffset < range.baseOffset && range.focusOffset <= str_offset.offset && str_offset.offset <= range.baseOffset))) {
+      text = range.toString();
+    } else {
+      var str = str_offset.string;
+      var start = str_offset.offset;
+      var end = start + 1;
+      var valid_word = /^((\w)+|([\u0590-\u05ff\"\']+))$/;
+      if(!valid_word.test(str.substring(start, end)))
+        return null;
+      while(start > 0 && valid_word.test(str.substring(start - 1, end)))
+        start--;
+      while(end < str.length && valid_word.test(str.substring(start, end+1)))
+        end++;
+      text = str.substring(start, end);
+    }
+  }
   HTTtranslateWord(text);
 }
 
@@ -280,7 +292,7 @@ function HTToptions_callback(options) {
   HTToptions = options;
   if(HTToptions['trigger_hover']) {
     window.addEventListener("mousemove", HTTmousemove, false);
-    window.addEventListener("DOMMouseScroll", HTTmousescroll, false);
+    window.addEventListener("scroll", HTTmousescroll, false);
     window.addEventListener("click", HTTclick, false);
   }
   if(HTToptions['trigger_click']) {
