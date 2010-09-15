@@ -1,0 +1,61 @@
+<html>
+<head><title>My Test Extension Options</title>
+<script type="text/javascript">
+// Saves options to localStorage.
+function save_options() {
+  var options = {'trigger_hover' : document.getElementById("HTTTriggerHover").checked,
+                 'HTTtooltipDelay' : document.getElementById("HTTTriggerHoverDelay").value,
+                 'trigger_click' : document.getElementById("HTTTriggerClick").checked,
+                 'trigger_highlight' : document.getElementById("HTTTriggerHighlight").checked,
+                 'trigger_keyboard' : document.getElementById("HTTTriggerKeyboard").checked,
+                 'HTTtooltipCharacter' : document.getElementById("HTTTriggerKeyboardCharacter").value,
+                 'align_top' : document.getElementById("HTTLocationY1").checked,
+                 'align_left' : document.getElementById("HTTLocationX1").checked,
+                 'keep_on_screen' : document.getElementById("HTTKeepOnScreen").checked};
+  localStorage["options"] = JSON.stringify(options);
+}
+
+// Restores select box state to saved value from localStorage.
+function restore_options() {
+  var options = JSON.parse(localStorage['options']);
+  if (!options) {
+    options = {};
+  }
+  if(options['trigger_hover'] == undefined) options['trigger_hover'] = 1;
+  if(options['HTTtooltipDelay'] == undefined) options['HTTtooltipDelay'] = 1000;
+  if(options['trigger_click'] == undefined) options['trigger_click'] = 0;
+  if(options['trigger_highlight'] == undefined) options['trigger_highlight'] = 0;
+  if(options['trigger_keyboard'] == undefined) options['trigger_keyboard'] = 0;
+  if(options['HTTtooltipCharacter'] == undefined) options['HTTtooltipCharacter'] = 'T';
+  if(options['align_top'] == undefined) options['align_top'] = 1;
+  if(options['align_left'] == undefined) options['align_left'] = 1;
+  if(options['keep_on_screen'] == undefined) options['keep_on_screen'] = 1;
+
+  document.getElementById("HTTTriggerHover").checked = options['trigger_hover'];
+  document.getElementById("HTTTriggerHoverDelay").value = options['HTTtooltipDelay'];
+  document.getElementById("HTTTriggerClick").checked = options['trigger_click'];
+  document.getElementById("HTTTriggerHighlight").checked = options['trigger_highlight'];
+  document.getElementById("HTTTriggerKeyboard").checked = options['trigger_keyboard'];
+  document.getElementById("HTTTriggerKeyboardCharacter").value = options['HTTtooltipCharacter'];
+  document.getElementById("HTTLocationY1").checked = options['align_top'];
+  document.getElementById("HTTLocationX1").checked = options['align_left'];
+  document.getElementById("HTTLocationY0").checked = !options['align_top'];
+  document.getElementById("HTTLocationX0").checked = !options['align_left'];
+  document.getElementById("HTTKeepOnScreen").checked = options['keep_on_screen'];
+}
+
+</script></head>
+<body onload="restore_options()">
+  <input type="checkbox" id="HTTTriggerHover"/><label for="HTTTriggerHover">Show Tooltip after </label><input type="text" id="HTTTriggerHoverDelay"/><label for="HTTTriggerHover"> milliseconds</label><br />
+  <input type="checkbox" id="HTTTriggerClick"/><label for="HTTTriggerClick">Show Tooltip after clicking on a word</label><br />
+  <input type="checkbox" id="HTTTriggerHighlight"/><label for="HTTTriggerHighlight">Show Tooltip after selecting a word or phrase</label><br />
+  <input type="checkbox" id="HTTTriggerKeyboard"/><label for="HTTTriggerKeyboard">Show Tooltip after pressing </label><input type="text" maxlength=1 id="HTTTriggerKeyboardCharacter"/><label for="HTTTriggerKeyboard"> on the keyboard</label><br />
+  <span class="HTTHeader">Tooltip Location</span><br />
+  &nbsp; &nbsp; <input type="radio" name="HTTLocationX" id="HTTLocationX0" value="0" /><label for="HTTLocationX0">To the left</label>
+  &nbsp; &nbsp; <input type="radio" name="HTTLocationX" id="HTTLocationX1" value="1" /><label for="HTTLocationX1">To the right</label><br />
+  &nbsp; &nbsp; <input type="radio" name="HTTLocationY" id="HTTLocationY1" value="1" /><label for="HTTLocationY1">Below</label>
+  &nbsp; &nbsp; <input type="radio" name="HTTLocationY" id="HTTLocationY0" value="0" /><label for="HTTLocationY0">Above</label><br />
+  <input type="checkbox" id="HTTKeepOnScreen"/><label for="HTTKeepOnScreen">Keep Tooltips on screen</label><br />
+  <button onclick="save_options()">Save</button>
+</body>
+</html>
