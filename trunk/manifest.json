@@ -6,8 +6,8 @@
     "http://morfix.mako.co.il/*"
   ],
   "icons": {
-    "48" : "sample-48.png",
-    "128" : "sample-128.png"
+    "48" : "HTT-48.png",
+    "128" : "HTT-128.png"
   },
   "background_page" : "background.html",
   "options_page": "options.html",
