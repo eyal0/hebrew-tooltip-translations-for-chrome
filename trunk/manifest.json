@@ -1,6 +1,6 @@
 {
   "name": "Hebrew Tooltip Translation for Chrome",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Translate Hebrew to English and vice-versa via tooltip",
   "permissions": [
     "http://morfix.mako.co.il/*"
@@ -11,9 +11,10 @@
   },
   "background_page" : "background.html",
   "options_page": "options.html",
+  "update_url": "http://hebrew-tooltip-translations-for-chrome.googlecode.com/files/updates.xml",
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["http://*/*"],
       "css": ["htt.css"],
       "js" : ["contentscript.js"]
     }
