@@ -32,10 +32,10 @@
         if (request.action == 'xhr') {
           xhr(request.url, callback);
         } else if(request.action == 'localStorage_set') {
-          localStorage[request.attribute] = JSON.stringify(request.value);
+          localStorage[request.attribute] = JSON.stringify(request.value || null);
           callback();
         } else if(request.action == 'localStorage_get') {
-          callback(JSON.parse(localStorage[request.attribute]));
+          callback(JSON.parse(localStorage[request.attribute]) || null);
         }
       };
 
