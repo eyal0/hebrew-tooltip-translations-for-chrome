@@ -290,6 +290,16 @@ function HTTinit () {
 
 function HTToptions_callback(options) {
   HTToptions = options;
+  if(!HTToptions) {
+    HTToptions = {'trigger_hover' : 1,
+                  'HTTtooltipDelay' : 1000,
+                  'trigger_click' : 0,
+                  'trigger_highlight' : 0,
+                  'trigger_keyboard' : 0,
+                  'HTTtooltipCharacter' : "T",
+                  'align_top' : 1,
+                  'align_left' : 1,
+                  'keep_on_screen' : 1}
   if(HTToptions['trigger_hover']) {
     window.addEventListener("mousemove", HTTmousemove, false);
     window.addEventListener("scroll", HTTmousescroll, false);
