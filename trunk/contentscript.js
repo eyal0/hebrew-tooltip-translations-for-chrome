@@ -128,7 +128,7 @@ function getStringOffsetFromPoint(elem, x, y) {
     var currentPos = 0;
     var endPos = range.endOffset;
     //can't binary search because the rectangles are complicated, two-dimensional
-    while(currentPos+1 < endPos) {
+    while(currentPos < endPos) {
       range.setStart(elem, currentPos);
       range.setEnd(elem, currentPos+1);
       if(range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
