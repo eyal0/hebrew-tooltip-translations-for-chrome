@@ -1,6 +1,6 @@
 {
   "name": "Hebrew Tooltip Translation for Chrome",
-  "version": "1.6",
+  "version": "1.7",
   "description": "Translate Hebrew to English and vice-versa via tooltip",
   "permissions": [
     "http://morfix.mako.co.il/*"
