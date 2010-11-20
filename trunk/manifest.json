@@ -12,7 +12,6 @@
   },
   "background_page" : "background.html",
   "options_page": "options.html",
-  "update_url": "http://hebrew-tooltip-translations-for-chrome.googlecode.com/files/updates.xml",
   "content_scripts": [
     {
       "matches": ["http://*/*"],
