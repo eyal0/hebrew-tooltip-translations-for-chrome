@@ -6,6 +6,7 @@
     "http://morfix.mako.co.il/*"
   ],
   "icons": {
+    "32" : "HTT-32.png",
     "48" : "HTT-48.png",
     "128" : "HTT-128.png"
   },
