@@ -55,59 +55,43 @@ function HTTshowToolTip() {
 }
 
 function HTTparseResponse(responseText) {
-  var i;
   var startText;
   var endPos;
   var rtl;
-
   if(responseText == null) return;
-  i=1;
-  startText = responseText.indexOf("spnTrans1");
+  startText = responseText.indexOf("word_ph");
   if(startText != -1) {
     //we've got something
-    if(responseText.indexOf('"ResultContainer" dir="ltr"') != -1)
+    if(responseText.indexOf('word_ph translation_en') != -1)
       rtl = false; //search of an English word
     else
       rtl = true; //search of a Hebrew word
     HTTdefinitions = "";
-    HTTdefinitions += "<table class='HTT " + (rtl?"HTTHebrew":"HTTEnglish") + "' dir=\"\"><tbody class='HTT " + (rtl?"HTTHebrew":"HTTEnglish") + "' dir=\"\">";
-    startText = responseText.indexOf("ResultContainer");
-    startText = responseText.indexOf("<span", startText);
-    while(responseText.indexOf("spnTrans" + i) != -1) {
+    HTTdefinitions += "<table class='HTT " + (rtl?"HTTHebrew":"HTTEnglish") + "' dir=\"\"><tbody class='HTT " + (rtl?"HTTHebrew":"HTTEnglish") + "' dir=\"\">\n";
+    startText = 0;
+    while(responseText.indexOf("word_ph", startText) != -1) {
       //first the original word
-      if(rtl) //search of a Hebrew word
-        startText = responseText.indexOf('<span class="resultFont"', startText);
-      else //search of an English word
-        startText = responseText.indexOf('<span class="siteFont"', startText);
+      startText = responseText.indexOf('<span class="word"', startText);
       startText = responseText.indexOf(">", startText) + 1;
       endText = responseText.indexOf("</span>", startText);
-      HTTdefinitions += "<tr class='HTT'><td class='HTT HTTWord " + (rtl?"HTTHebrew":"HTTEnglish") + "'>" + responseText.substring(startText, endText) + "</td>";
+      HTTdefinitions += "<tr class='HTT'><td class='HTT HTTWord " + (rtl?"HTTHebrew":"HTTEnglish") + "'>" + responseText.substring(startText, endText) + "</td>\n";
 
       //now the part of speech
-      startText = responseText.indexOf("<span class", endText);
+      startText = responseText.indexOf('<span class="diber"', endText);
       startText = responseText.indexOf(">", startText) + 1;
       endText = responseText.indexOf("</span>", startText);
-      HTTdefinitions += "<td class='HTT HTTPartOfSpeech " + (rtl?"HTTHebrew":"HTTEnglish") + "'>" + responseText.substring(startText, endText) + "</td>";
+      HTTdefinitions += "<td class='HTT HTTPartOfSpeech " + (rtl?"HTTHebrew":"HTTEnglish") + "'>" + responseText.substring(startText, endText) + "</td>\n";
 
       //finally the definition
-      startText = responseText.indexOf("spnTrans", endText);
-      startText = responseText.indexOf(">", startText) + 1;
+      startText = responseText.indexOf("<div", endText);
       HTTdefinitions += "<td class='HTT HTTDefinition " + (!rtl?"HTTHebrew":"HTTEnglish") + "'>";
-      for(var spanCount = 1; spanCount > 0;) {
-        endText = responseText.indexOf("<", startText);
-        if(responseText.indexOf("<", endText) < responseText.indexOf("</span>", endText)) {
-          if(responseText.substr(endText, 5) == "<span") {
-            spanCount++;
-          }
-        } else {
-          spanCount--;
-        }
-        HTTdefinitions += responseText.substring(startText, endText);
-        startText = responseText.indexOf(">", endText) + 1;
+      if(responseText.indexOf('default_trans', startText) != -1 && responseText.indexOf('default_trans', startText) < responseText.indexOf('</div>', startText)) {
+        startText = responseText.indexOf('default_trans', startText);
       }
-      HTTdefinitions += "</td></tr>";
-
-      i++;
+      startText = responseText.indexOf('>', startText) + 1;
+      endText = responseText.indexOf('</div>', startText);
+      HTTdefinitions += responseText.substring(startText, endText);
+      HTTdefinitions += "</td></tr>\n";
     }
     HTTdefinitions += "</tbody></table>";
   }
@@ -269,14 +253,15 @@ function HTTclick(event) {
 }
 
 function HTTmousemove(event) {
-  //test out the tooltip
   var e = event;
-  //every movement of the mouse restarts the timer and removes the tooltip
-  HTThide();
+  if(HTTelem == e.target && HTTcurX == e.clientX && HTTcurY == e.clientY) return; //do nothing, no real movement
   //variables for use in finding the word and displaying the translation
   HTTelem = e.target;
   HTTcurX = e.clientX;
   HTTcurY = e.clientY;
+  
+  //every movement of the mouse restarts the timer and removes the tooltip
+  HTThide();
   if(!HTToptions['trigger_hover'])
     return; //only used this to get the last_mouse_event (location)
   HTTtimeoutID = window.setTimeout(HTTgetWord, HTToptions['HTTtooltipDelay']);
