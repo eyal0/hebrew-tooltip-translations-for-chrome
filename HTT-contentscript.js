@@ -118,7 +118,8 @@ window.addEventListener("load",
         while(currentPos < endPos) {
           range.setStart(elem, currentPos);
           range.setEnd(elem, currentPos+1);
-          if(range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
+          if(range.getBoundingClientRect() &&
+             range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
              range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
             range.detach();
             return({'string' : str, 'offset' : currentPos, 'text_node' : elem});
@@ -129,7 +130,8 @@ window.addEventListener("load",
         for(var i = 0; i < elem.childNodes.length; i++) {
           var range = elem.childNodes[i].ownerDocument.createRange();
           range.selectNodeContents(elem.childNodes[i]);
-          if(range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
+          if(range.getBoundingClientRect() &&
+             range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
              range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
             range.detach();
             var ret = getStringOffsetFromPoint(elem.childNodes[i], x, y);
