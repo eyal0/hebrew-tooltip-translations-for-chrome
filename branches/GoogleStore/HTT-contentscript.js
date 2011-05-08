@@ -5,7 +5,6 @@
   var HTTcurX;
   var HTTcurY;
   var HTTtooltip;
-  var HTTactivity_indicator
   var HTTdefinitions = ""; //translation output
   var HTToptions;
 
@@ -57,7 +56,6 @@
   }
 
   function HTTparseResponse(responseText) {
-    if(HTTactivity_indicator) HTTactivity_indicator.style.visibility = "hidden";
     if(responseText == null) return;  //quit if we didn't get anything
 
     var tempDiv = document.createElement('div');
@@ -103,7 +101,41 @@
 
   function HTTtranslateWord(input) {
     if(input != '') {
-      if(HTTactivity_indicator) HTTactivity_indicator.style.visibility = "visible";
+      if(HTToptions['activity_indicator']) {
+        HTTtooltip.style.width = "auto";
+        HTTtooltip.style.height = "auto";
+        HTTtooltip.innerHTML = "<span class='HTT HTTActivityIndicator'>HTT...</span>"
+        ttX = HTTcurX + window.scrollX;
+        ttY = HTTcurY + window.scrollY;
+        if(HTToptions['align_left']) {
+          ttX += 10;
+        } else {
+          ttX -= HTTtooltip.scrollWidth + 10;
+        }
+        if(HTToptions['align_top']) {
+          ttY += 10;
+        } else {
+          ttY -= HTTtooltip.scrollHeight + 10;
+        }
+        minX = window.scrollX;
+        minY = window.scrollY;
+        maxX = minX + window.innerWidth - HTTtooltip.scrollWidth;
+        maxY = minY + window.innerHeight - HTTtooltip.scrollHeight;
+        if(HTToptions['keep_on_screen']) {
+          if(ttX < minX)
+            ttX = minX;
+          else if(ttX > maxX)
+            ttX = maxX;
+          if(ttY < minY)
+            ttY = minY;
+          else if(ttY > maxY)
+            ttY = maxY;
+        }
+        HTTtooltip.style.left = ttX + "px";
+        HTTtooltip.style.top = ttY + "px";
+
+        HTTtooltip.style.visibility="visible";
+      }
       var HTTreq;
 
       chrome.extension.sendRequest({'action' : 'xhr', 'url' : 'http://morfix.mako.co.il/default.aspx?q=' + escape(input)}, HTTparseResponse);
@@ -284,6 +316,9 @@
   function HTTmousemove(event) {
     var e = event;
 
+    if(HTTelem == e.target && HTTcurX == e.clientX && HTTcurY == e.clientY)
+      return; //already got this mousemove so ignore it
+      
     //variables for use in finding the word and displaying the translation
     HTTelem = e.target;
     HTTcurX = e.clientX;
@@ -302,7 +337,6 @@
   }
 
   function HTToptions_callback(options) {
-    HTToptions = options;
     //below copied from HTT-options.html
     if (!options) {
       options = {};
@@ -336,6 +370,9 @@
     if(options['keep_on_screen'] == undefined) options['keep_on_screen'] = 1;
     
     if(options['activity_indicator'] == undefined) options['activity_indicator'] = 1;
+    
+    HTToptions = options;
+
     if(HTToptions['trigger_hover'] || HTToptions['hide_move']) {
       window.addEventListener("mousemove", HTTmousemove, false);
     }
@@ -353,12 +390,6 @@
     }
     if(HTToptions['hide_scroll']) {
       window.addEventListener("scroll", HTTmousescroll, false);
-    }
-    if(HTToptions['activity_indicator']) {
-      HTTactivity_indicator = document.createElement("div");
-      HTTactivity_indicator.className = "HTT HTTActivityIndicator";  //for use by users that might do things with stylish
-      HTTactivity_indicator.style.visibility = "hidden";
-      document.body.insertBefore(HTTactivity_indicator, document.body.firstChild);
     }
     HTTtooltip = document.createElement("div");
     HTTtooltip.className = "HTT HTTtooltip"; //for use by users that might do things with stylish
