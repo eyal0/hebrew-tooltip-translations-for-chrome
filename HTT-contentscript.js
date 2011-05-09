@@ -59,31 +59,40 @@
     if(responseText == null) return;  //quit if we didn't get anything
 
     var tempDiv = document.createElement('div');
-    tempDiv.innerHTML = responseText.replace(/<script(.|\s)*?\/script>/gi, '');
+    tempDiv.innerHTML = responseText.replace(/<script(.|\s)*?\/script>/gi, '').replace(/src="[^"]*"/gi, '');
 
     var translations_e2h = tempDiv.getElementsByClassName('translate_box_en box');
     var results = new Array();
     var rtl = 0; //count how many of each type
     for(var i = 0; i < translations_e2h.length; i++) {
-      var new_result = new Object;
-      new_result['word'] = translations_e2h[i].getElementsByClassName('word')[0].innerText;
-      new_result['partOfSpeech'] = translations_e2h[i].getElementsByClassName('diber')[0].innerText;
-      new_result['definition'] = translations_e2h[i].getElementsByClassName('translation translation_he')[0].innerText;
-      new_result['rtl'] = 0;
-      rtl--;
-      results.push(new_result);
+      if(translations_e2h[i].getElementsByClassName('word').length > 0 &&
+         translations_e2h[i].getElementsByClassName('diber').length > 0 &&
+         translations_e2h[i].getElementsByClassName('translation translation_he').length > 0) {
+        var new_result = new Object;
+        new_result['word'] = translations_e2h[i].getElementsByClassName('word')[0].innerText;
+        new_result['partOfSpeech'] = translations_e2h[i].getElementsByClassName('diber')[0].innerText;
+        new_result['definition'] = translations_e2h[i].getElementsByClassName('translation translation_he')[0].innerText;
+        new_result['rtl'] = 0;
+        rtl--;
+        results.push(new_result);
+      }
     }
 
     var translations_h2e = tempDiv.getElementsByClassName('translate_box');
     for(var i = 0; i < translations_h2e.length; i++) {
-      var new_result = new Object;
-      new_result['word'] = translations_h2e[i].getElementsByClassName('word')[0].innerText;
-      new_result['partOfSpeech'] = translations_h2e[i].getElementsByClassName('diber')[0].innerText;
-      new_result['definition'] = translations_h2e[i].getElementsByClassName('default_trans')[0].innerText;
-      new_result['rtl'] = 1;
-      rtl++;
-      results.push(new_result);
+      if(translations_h2e[i].getElementsByClassName('word').length > 0 &&
+         translations_h2e[i].getElementsByClassName('diber').length > 0 &&
+         translations_h2e[i].getElementsByClassName('default_trans').length > 0) {
+        var new_result = new Object;
+        new_result['word'] = translations_h2e[i].getElementsByClassName('word')[0].innerText;
+        new_result['partOfSpeech'] = translations_h2e[i].getElementsByClassName('diber')[0].innerText;
+        new_result['definition'] = translations_h2e[i].getElementsByClassName('default_trans')[0].innerText;
+        new_result['rtl'] = 1;
+        rtl++;
+        results.push(new_result);
+      }
     }
+    tempDiv = null;
 
     var rtl = (rtl > 0); //map to either 0 or 1
     HTTdefinitions = "";
@@ -97,6 +106,7 @@
     }
     HTTdefinitions += "</tbody></table>";
     HTTshowToolTip();
+    
   }
 
   function HTTtranslateWord(input) {
