@@ -174,7 +174,11 @@
     } else {
       for(var i = 0; i < elem.childNodes.length; i++) {
         var range = elem.childNodes[i].ownerDocument.createRange();
-        range.selectNodeContents(elem.childNodes[i]);
+        try {
+          range.selectNodeContents(elem.childNodes[i]);
+        } catch(err) {
+          continue;
+        }
         if(range.getBoundingClientRect() &&
            range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
            range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
