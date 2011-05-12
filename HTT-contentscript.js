@@ -22,8 +22,8 @@
       HTTtooltip.firstChild.style.marginRight = "0";
       HTTtooltip.firstChild.style.marginBottom = "0";
       HTTtooltip.firstChild.style.marginLeft = "0";
-      ttX = HTTcurX + window.scrollX;
-      ttY = HTTcurY + window.scrollY;
+      ttX = HTTcurX;// + window.scrollX;
+      ttY = HTTcurY;// + window.scrollY;
       if(HTToptions['align_left']) {
         ttX += 10;
       } else {
@@ -34,8 +34,8 @@
       } else {
         ttY -= HTTtooltip.scrollHeight + 10;
       }
-      minX = window.scrollX;
-      minY = window.scrollY;
+      minX = 0;//window.scrollX;
+      minY = 0;//window.scrollY;
       maxX = minX + window.innerWidth - HTTtooltip.scrollWidth;
       maxY = minY + window.innerHeight - HTTtooltip.scrollHeight;
       if(HTToptions['keep_on_screen']) {
@@ -115,8 +115,8 @@
         HTTtooltip.style.width = "auto";
         HTTtooltip.style.height = "auto";
         HTTtooltip.innerHTML = "<span class='HTT HTTActivityIndicator'>HTT...</span>"
-        ttX = HTTcurX + window.scrollX;
-        ttY = HTTcurY + window.scrollY;
+        ttX = HTTcurX;
+        ttY = HTTcurY;
         if(HTToptions['align_left']) {
           ttX += 10;
         } else {
@@ -127,8 +127,8 @@
         } else {
           ttY -= HTTtooltip.scrollHeight + 10;
         }
-        minX = window.scrollX;
-        minY = window.scrollY;
+        minX = 0;
+        minY = 0;
         maxX = minX + window.innerWidth - HTTtooltip.scrollWidth;
         maxY = minY + window.innerHeight - HTTtooltip.scrollHeight;
         if(HTToptions['keep_on_screen']) {
