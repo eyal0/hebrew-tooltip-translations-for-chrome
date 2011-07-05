@@ -56,6 +56,7 @@
   }
 
   function HTTparseResponse(responseText) {
+    HTThide(true);
     if(responseText == null) return;  //quit if we didn't get anything
 
     var tempDiv = document.createElement('div');
@@ -94,19 +95,20 @@
     }
     tempDiv = null;
 
-    var rtl = (rtl > 0); //map to either 0 or 1
-    HTTdefinitions = "";
-    HTTdefinitions += "<table class='HTT " + (rtl?"HTTHebrew":"HTTEnglish") + "' dir=\"\"><tbody class='HTT " + (rtl?"HTTHebrew":"HTTEnglish") + "' dir=\"\">\n";
-    for(var i = 0; i < results.length; i++) {
-      HTTdefinitions += "<tr class='HTT'>";
-      HTTdefinitions += "<td class='HTT HTTWord " + (results[i].rtl?"HTTHebrew":"HTTEnglish") + "'>" + results[i].word + "</td>\n";
-      HTTdefinitions += "<td class='HTT HTTPartOfSpeech " + (results[i].rtl?"HTTHebrew":"HTTEnglish") + "'>" + results[i].partOfSpeech + "</td>\n";
-      HTTdefinitions += "<td class='HTT HTTDefinition " + (!results[i].rtl?"HTTHebrew":"HTTEnglish") + "'>" + results[i].definition + "</td>";
-      HTTdefinitions += "</tr>\n";
+    if(results.length > 0) {
+      var rtl = (rtl > 0); //map to either 0 or 1
+      HTTdefinitions = "";
+      HTTdefinitions += "<table class='HTT " + (rtl?"HTTHebrew":"HTTEnglish") + "' dir=\"\"><tbody class='HTT " + (rtl?"HTTHebrew":"HTTEnglish") + "' dir=\"\">\n";
+      for(var i = 0; i < results.length; i++) {
+        HTTdefinitions += "<tr class='HTT'>";
+        HTTdefinitions += "<td class='HTT HTTWord " + (results[i].rtl?"HTTHebrew":"HTTEnglish") + "'>" + results[i].word + "</td>\n";
+        HTTdefinitions += "<td class='HTT HTTPartOfSpeech " + (results[i].rtl?"HTTHebrew":"HTTEnglish") + "'>" + results[i].partOfSpeech + "</td>\n";
+        HTTdefinitions += "<td class='HTT HTTDefinition " + (!results[i].rtl?"HTTHebrew":"HTTEnglish") + "'>" + results[i].definition + "</td>";
+        HTTdefinitions += "</tr>\n";
+      }
+      HTTdefinitions += "</tbody></table>";
+      HTTshowToolTip();
     }
-    HTTdefinitions += "</tbody></table>";
-    HTTshowToolTip();
-    
   }
 
   function HTTtranslateWord(input) {
