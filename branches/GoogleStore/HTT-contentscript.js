@@ -155,45 +155,49 @@
   }
 
   function getStringOffsetFromPoint(elem, x, y) {
-    if(elem.nodeType == elem.TEXT_NODE) {
-      var range = elem.ownerDocument.createRange();
-      range.selectNodeContents(elem);
-      var str = range.toString();
-      var currentPos = 0;
-      var endPos = range.endOffset;
-      //can't binary search because the rectangles are complicated, two-dimensional
-      while(currentPos < endPos) {
-        range.setStart(elem, currentPos);
-        range.setEnd(elem, currentPos+1);
-        if(range.getBoundingClientRect() &&
-           range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
-           range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
-          range.detach();
-          return({'string' : str, 'offset' : currentPos, 'text_node' : elem});
+    try {
+      if(elem.nodeType == elem.TEXT_NODE) {
+        var range = elem.ownerDocument.createRange();
+        range.selectNodeContents(elem);
+        var str = range.toString();
+        var currentPos = 0;
+        var endPos = range.endOffset;
+        //can't binary search because the rectangles are complicated, two-dimensional
+        while(currentPos < endPos) {
+          range.setStart(elem, currentPos);
+          range.setEnd(elem, currentPos+1);
+          if(range.getBoundingClientRect() &&
+             range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
+             range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
+            range.detach();
+            return({'string' : str, 'offset' : currentPos, 'text_node' : elem});
+          }
+          currentPos += 1;
         }
-        currentPos += 1;
+      } else {
+        for(var i = 0; i < elem.childNodes.length; i++) {
+          var range = elem.childNodes[i].ownerDocument.createRange();
+          try {
+            range.selectNodeContents(elem.childNodes[i]);
+          } catch(err) {
+            continue;
+          }
+          if(range.getBoundingClientRect() &&
+             range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
+             range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
+            range.detach();
+            var ret = getStringOffsetFromPoint(elem.childNodes[i], x, y);
+            if(ret)
+              return(ret);
+          } else {
+            range.detach();
+          }
+        }
       }
-    } else {
-      for(var i = 0; i < elem.childNodes.length; i++) {
-        var range = elem.childNodes[i].ownerDocument.createRange();
-        try {
-          range.selectNodeContents(elem.childNodes[i]);
-        } catch(err) {
-          continue;
-        }
-        if(range.getBoundingClientRect() &&
-           range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
-           range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
-          range.detach();
-          var ret = getStringOffsetFromPoint(elem.childNodes[i], x, y);
-          if(ret)
-            return(ret);
-        } else {
-          range.detach();
-        }
-      }
+      return(null);
+    } catch (e) {
+      return(null);
     }
-    return(null);
   }
 
   function HTTgetWord() {
