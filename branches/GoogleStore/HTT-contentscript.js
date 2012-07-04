@@ -150,7 +150,7 @@
       }
       var HTTreq;
 
-      chrome.extension.sendRequest({'action' : 'xhr', 'url' : 'http://morfix.nana10.co.il/default.aspx?q=' + escape(input)}, HTTparseResponse);
+      chrome.extension.sendRequest({'action' : 'xhr', 'url' : 'http://www.morfix.co.il/' + encodeURIComponent(input)}, HTTparseResponse);
     }
   }
 
