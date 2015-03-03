@@ -1,0 +1,30 @@
+# Introduction #
+
+These are instructions on how to customize Hebrew Tooltip Translations for Chrome so that you can change the size, color and font of the Tooltips.
+
+# Details #
+
+1. Install [Stylish](https://chrome.google.com/webstore/detail/stylish/fjnbnpbmkenffdnngjfgmeleoegfcffe?hl=en)
+
+2. Add this style to all pages:
+
+```
+.HTTPopup { background:#f6f6f6; border:3px double #666666; }
+.HTTPopupContainer { display:none; position:absolute; top:0; right:0; bottom:0; left:0; }
+#HTTConfig { width:700px; padding:10px; margin:20px auto 0; }
+#HTTConfig label { color:#666666; font-weight:normal; }
+#HTTConfig .HTTHeader { font-weight:bold; }
+#HTTShadow { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:black; opacity:0.6; }
+.HTT { background: none; border-spacing: 0; border:0; padding:0; line-height:100%; margin: 0;}
+.HTTImportant { font-weight:bold; }
+.HTTHebrew { direction:rtl; text-align:right; font-family:David; }
+.HTTEnglish { direction:ltr; text-align:left; font-family:Arial; }
+.HTTWord { font-size:11pt; color:#000099; }
+.HTTPartOfSpeech { font-size:7pt; color:black; font-family:Arial; }
+.HTTDefinition { font-size:11pt; color:#000099; }
+.HTTtooltip { border: 1px solid black; visibility: hidden; top: 0px; left: 0px; position: fixed; background-color: lightyellow; z-index: 10000; width: 0px; height: 0px; }
+```
+
+3. Enable and save the style.
+
+That's the default style.  If you want to change, for instance, the background color, change where it says "lightyellow" to "brown".  From here you can change the font sizes, typefaces, and more.
