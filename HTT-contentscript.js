@@ -154,26 +154,57 @@
     }
   }
 
+  function getStringOffsetFromPointHelper(elem, x, y, range, start, end) {
+    if (start >= end) {
+      return null;
+    }
+    // At this point, start < end.
+    var mid = Math.round((start+end)/2);
+
+    range.setStart(elem, start);
+    range.setEnd(elem, mid);
+    var result0 = null;
+    if (range.getBoundingClientRect() &&
+        range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
+        range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
+      if (start + 1 == mid) {
+        // Found it.
+        return {'offset' : start, 'text_node' : elem};
+      } else {
+        // Need to recurse on this section.
+        result0 = getStringOffsetFromPointHelper(elem, x, y, range, start, mid);
+      }
+    }
+
+    range.setStart(elem, mid);
+    range.setEnd(elem, end);
+    var result1 = null;
+    if (range.getBoundingClientRect() &&
+        range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
+        range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
+      if (mid + 1 == end) {
+        // Found it.
+        return {'offset' : start, 'text_node' : elem};
+      } else {
+        // Need to recurse on this section.
+        result1 = getStringOffsetFromPointHelper(elem, x, y, range, mid, end);
+      }
+    }
+    return result0 || result1; // At most 1 should be valid.
+  }
+
   function getStringOffsetFromPoint(elem, x, y) {
     try {
       if(elem.nodeType == elem.TEXT_NODE) {
         var range = elem.ownerDocument.createRange();
         range.selectNodeContents(elem);
         var str = range.toString();
-        var currentPos = 0;
-        var endPos = range.endOffset;
-        //can't binary search because the rectangles are complicated, two-dimensional
-        while(currentPos < endPos) {
-          range.setStart(elem, currentPos);
-          range.setEnd(elem, currentPos+1);
-          if(range.getBoundingClientRect() &&
-             range.getBoundingClientRect().left <= x && range.getBoundingClientRect().right  >= x &&
-             range.getBoundingClientRect().top  <= y && range.getBoundingClientRect().bottom >= y) {
-            range.detach();
-            return({'string' : str, 'offset' : currentPos, 'text_node' : elem});
-          }
-          currentPos += 1;
-        }
+        // Binary search on both halves that report true.
+        var result =  getStringOffsetFromPointHelper(elem, x, y, range, 0, range.endOffset);
+        range.detach();
+        return({'string' : str,
+                'offset' : result['offset'],
+                'text_node' : result['text_node']});
       } else {
         for(var i = 0; i < elem.childNodes.length; i++) {
           var range = elem.childNodes[i].ownerDocument.createRange();
