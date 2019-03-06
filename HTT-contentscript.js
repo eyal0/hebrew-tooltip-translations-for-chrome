@@ -62,35 +62,35 @@
     var tempDiv = document.createElement('div');
     tempDiv.innerHTML = responseText.replace(/<script(.|\s)*?\/script>/gi, '').replace(/src="[^"]*"/gi, '');
 
-    var translations_e2h = tempDiv.getElementsByClassName('translate_box_en box');
+    var translations_e2h = tempDiv.getElementsByClassName("Translation_content_enTohe");
     var results = new Array();
     var rtl = 0; //count how many of each type
     for(var i = 0; i < translations_e2h.length; i++) {
-      if(translations_e2h[i].getElementsByClassName('word').length > 0 &&
-         translations_e2h[i].getElementsByClassName('diber').length > 0 &&
-         translations_e2h[i].getElementsByClassName('translation translation_he').length > 0) {
+      try {
         var new_result = new Object;
-        new_result['word'] = translations_e2h[i].getElementsByClassName('word')[0].innerText;
-        new_result['partOfSpeech'] = translations_e2h[i].getElementsByClassName('diber')[0].innerText;
-        new_result['definition'] = translations_e2h[i].getElementsByClassName('translation translation_he')[0].innerText;
+        new_result['word'] = translations_e2h[i].getElementsByClassName("Translation_spTop_enTohe")[0].innerText.trim();
+        new_result['partOfSpeech'] = translations_e2h[i].getElementsByClassName("Translation_sp2Top_enTohe")[0].innerText.trim();
+        new_result['definition'] = translations_e2h[i].getElementsByClassName('normal_translation_div')[0].innerText.trim();
         new_result['rtl'] = 0;
         rtl--;
         results.push(new_result);
+      } catch (e) {
+        console.error("HTT can't parse Hebrew to English: " + e);
       }
     }
 
-    var translations_h2e = tempDiv.getElementsByClassName('translate_box');
+    var translations_h2e = tempDiv.getElementsByClassName("Translation_content_heToen");
     for(var i = 0; i < translations_h2e.length; i++) {
-      if(translations_h2e[i].getElementsByClassName('word').length > 0 &&
-         translations_h2e[i].getElementsByClassName('diber').length > 0 &&
-         translations_h2e[i].getElementsByClassName('default_trans').length > 0) {
+      try {
         var new_result = new Object;
-        new_result['word'] = translations_h2e[i].getElementsByClassName('word')[0].innerText;
-        new_result['partOfSpeech'] = translations_h2e[i].getElementsByClassName('diber')[0].innerText;
-        new_result['definition'] = translations_h2e[i].getElementsByClassName('default_trans')[0].innerText;
+        new_result['word'] = translations_h2e[i].getElementsByClassName("Translation_spTop_heToen")[0].innerText.trim();
+        new_result['partOfSpeech'] = translations_h2e[i].getElementsByClassName("Translation_sp2Top_heToen")[0].innerText.trim();
+        new_result['definition'] = translations_h2e[i].getElementsByClassName('normal_translation_div')[0].innerText.trim();
         new_result['rtl'] = 1;
         rtl++;
         results.push(new_result);
+      } catch (e) {
+        console.error("HTT can't parse English to Hebrew: " + e);
       }
     }
     tempDiv = null;
